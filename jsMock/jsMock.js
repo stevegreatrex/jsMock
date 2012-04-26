@@ -134,6 +134,8 @@
                     
                     if (matchingMember)
                         return matchingMember.returnValue;
+                    else if (_self.strict)
+                        throw "No matching setups";
                 };
             },
 
@@ -170,5 +172,6 @@
         //public members
         this.setup = _setup;
         this.verify = _verify;
+        this.strict = true;
     };
 })(jsMock);

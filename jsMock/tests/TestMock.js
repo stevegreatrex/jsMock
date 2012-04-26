@@ -108,3 +108,23 @@ test("setup supports multiple methods with different signatures", function() {
      equal(four.calls.length, 1, "A single call matches the parameterless setup");
      equal(five.calls.length, 0, "No calls matched the other member");
 });
+
+test("setup throws when no matching signature", function() {
+    var mock = new jsMock.Mock();
+
+    mock.setup("member").with("one").returns("one");
+
+    raises(function() { mock.member(); });
+    raises(function() { mock.member("two"); });
+});
+
+test("setup does not throw when no matching signature but not strict", function() {
+    var mock = new jsMock.Mock();
+
+    mock.setup("member").with("one").returns("one");
+
+    mock.strict = false;
+
+    mock.member();
+    mock.member("two");
+});
