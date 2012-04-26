@@ -34,7 +34,8 @@
 
                 //each parameter matches?
                 for (var i = 0; i < params.length; i++) {
-                    if (_expectedParameters[i] !== params[i]) return false;
+                    if (_expectedParameters[i] !== jsMock.constants.anything &&
+                        _expectedParameters[i] !== params[i]) return false;
                 }
 
                 return true;

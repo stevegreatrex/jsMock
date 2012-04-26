@@ -1,2 +1,5 @@
 ﻿jsMock = {};
 
+jsMock.constants = {
+    anything: {}
+};

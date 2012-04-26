@@ -83,6 +83,26 @@ test("called throws exception when non-matching with is called", function() {
     }, "Invalid parameters");
 });
 
+test("called accepts 'anything' constant", function() {
+    var setup = new jsMock.Setup("member")
+    
+        //expect specific paramemers with one 'anything' constant
+        .with("1", jsMock.constants.anything, false);
+
+    var func = function(){};
+    setup.called(["1", 2, false]);
+    setup.called(["1", null, false]);
+    setup.called(["1","2", false]);
+    setup.called(["1", func, false]);
+
+    equal(4, setup.calls.length, "Alll 4 calls should have been valid");
+    equal(2, setup.calls[0].arguments[1], "The original argument should have been used");
+    equal(null, setup.calls[1].arguments[1], "The original argument should have been used");
+    equal("2", setup.calls[2].arguments[1], "The original argument should have been used");
+    equal(func, setup.calls[3].arguments[1], "The original argument should have been used");
+
+});
+
 test("matches correctly checks parameter lists", function() {
     var setup = new jsMock.Setup("member")
     
@@ -94,4 +114,17 @@ test("matches correctly checks parameter lists", function() {
     equal(false, setup.matches(["1", "2", false]), "Parameters should not match");
     equal(false, setup.matches(["1", 2, "false"]), "Parameters should not match");
     equal(true, setup.matches(["1", 2, false]), "Parameters should match");
+});
+
+test("matches accepts 'anything' constant", function() {
+    var setup = new jsMock.Setup("member")
+    
+        //expect specific paramemers with one 'anything' constant
+        .with("1", jsMock.constants.anything, false);
+
+    var func = function(){};
+    equal(true, setup.matches(["1", 2, false]), "Should have matched");
+    equal(true, setup.matches(["1", null, false]), "Should have matched");
+    equal(true, setup.matches(["1","2", false]), "Should have matched");
+    equal(true, setup.matches(["1", func, false]), "Should have matched");
 });
