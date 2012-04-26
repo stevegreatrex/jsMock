@@ -177,3 +177,87 @@ test("callbacks get parameters passed in", function() {
     equal(2, callbackParam2, "Callback parameters should have been set");
     equal(setup, callbackThis, "The value of 'this' should be the setup within the callback");
 });
+
+test("times.exactly", function() {
+    var setup = new jsMock.Setup("member");
+    var returnedSetup = setup.times.exactly(2);
+    equal(setup, returnedSetup, "exactly should return the setup");
+
+    //no calls so far, so should fail
+    raises(function() { setup.verify(); }, "Expected 2 calls but had 0");
+
+    //make a call
+    setup.called();
+    raises(function() { setup.verify(); }, "Expected 2 calls but had 1");
+
+    //make another call
+    setup.called();
+    setup.verify(); //don't expect an exception
+
+    //make 1 call too many
+    setup.called();
+    raises(function() { setup.verify(); }, "Expected 2 calls but had 3");
+});
+
+test("times.once", function() {
+    var setup = new jsMock.Setup("member")
+    var returnedSetup = setup.times.once();
+    equal(setup, returnedSetup, "once should return the setup");
+
+    //no calls so far, so should fail
+    raises(function() { setup.verify(); }, "Expected 1 calls but had 0");
+
+    //make a call
+    setup.called();
+    setup.verify(); //don't expect an exceptio
+    
+    //make 1 call too many
+    setup.called();
+    raises(function() { setup.verify(); }, "Expected 1 calls but had 2");
+});
+
+test("times.atLeast", function() {
+var setup = new jsMock.Setup("member")
+    var returnedSetup = setup.times.atLeast(2);
+    equal(setup, returnedSetup, "atLeast should return the setup");
+
+    //no calls so far, so should fail
+    raises(function() { setup.verify(); }, "Expected 2- calls but had 0");
+
+    //make a call
+    setup.called();
+    raises(function() { setup.verify(); }, "Expected 2- calls but had 1");
+
+    //make a call
+    setup.called();
+    setup.verify(); //don't expect an exception
+    
+    //make a call
+    setup.called();
+    setup.verify(); //don't expect an exception
+});
+
+test("times.noMoreThan", function() {
+var setup = new jsMock.Setup("member")
+    var returnedSetup = setup.times.noMoreThan(2);
+    equal(setup, returnedSetup, "noMoreThan should return the setup");
+
+    //no calls so far, so should pass
+    setup.verify();
+
+    //make a call
+    setup.called();
+    setup.verify(); //should still pass
+
+    //make a call
+    setup.called();
+    setup.verify(); //should still pass
+
+    //make a call
+    setup.called();
+    raises(function() { setup.verify(); }, "Expected 0-2 calls but had 3");
+
+    //make a call
+    setup.called();
+    raises(function() { setup.verify(); }, "Expected 0-2 calls but had 4");
+});

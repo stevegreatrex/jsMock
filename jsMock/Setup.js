@@ -52,6 +52,38 @@
                 }
 
                 return true;
+            },
+        
+        //time recording
+            _expectedTimes = { min: 0, max: NaN },
+            _times = {
+                exactly: function(count) {
+                    _expectedTimes.min = _expectedTimes.max = count;
+                    return _self;
+                },
+                once: function() {
+                    return _times.exactly(1);
+                },
+                atLeast: function(count) {
+                    _expectedTimes.min = count;
+                    _expectedTimes.max = NaN;
+                    return _self;
+                },
+                noMoreThan: function(count) {
+                    _expectedTimes.min = 0;
+                    _expectedTimes.max = count;
+                    return _self;
+                }
+            },
+            
+         //verify
+            _verify = function() {
+                if (_calls.length < _expectedTimes.min || _calls.length > _expectedTimes.max) {
+                    var expectedCount = _expectedTimes.min;
+                    if (_expectedTimes.max != _expectedTimes.min)
+                        expectedCount = expectedCount + "-" + (_expectedTimes.max === NaN ? "*" : _expectedTimes.max)
+                    throw "Expected " + expectedCount  + " calls but had " + _calls.length;
+                }
             };
 
         //public members
@@ -61,5 +93,7 @@
         this.with = _with,
         this.matches = _areParametersValid;
         this.callback = _callback;
+        this.times = _times;
+        this.verify = _verify;
     };
 })(jsMock);
