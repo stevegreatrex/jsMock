@@ -128,3 +128,52 @@ test("matches accepts 'anything' constant", function() {
     equal(true, setup.matches(["1","2", false]), "Should have matched");
     equal(true, setup.matches(["1", func, false]), "Should have matched");
 });
+
+test("callbacks are all called", function() {
+    var setup = new jsMock.Setup("member"),
+        callback1CallCount = 0,
+        callback2CallCount = 0;
+
+    //setup 2 callbacks
+    setup.callback(function() {
+        callback1CallCount++;
+    });
+    setup.callback(function() {
+        callback2CallCount++;
+    });
+
+    //register a call
+    setup.called([]);
+
+    //check both callbacks were invoked
+    equal(1, callback1CallCount, "Callback should have been invoked");
+    equal(1, callback2CallCount, "Callback should have been invoked");
+
+    //register another call
+    setup.called([]);
+
+    //check both callbacks were invoked again
+    equal(2, callback1CallCount, "Callback should have been invoked");
+    equal(2, callback2CallCount, "Callback should have been invoked");
+});
+
+test("callbacks get parameters passed in", function() {
+     var setup = new jsMock.Setup("member"),
+        callbackParam1 = null,
+        callbackParam2 = null,
+        callbackThis = null;
+
+    //setup a callback that takes parameters
+    setup.callback(function(one, two) {
+        callbackParam1 = one;
+        callbackParam2 = two;
+        callbackThis = this;
+    });
+
+    setup.called(["one", 2]);
+
+    //check that the parameters were set
+    equal("one", callbackParam1, "Callback parameters should have been set");
+    equal(2, callbackParam2, "Callback parameters should have been set");
+    equal(setup, callbackThis, "The value of 'this' should be the setup within the callback");
+});

@@ -4,6 +4,9 @@
 
         //store all calls
             _calls = [],
+        
+        //store all callbacks
+            _callbacks = [],
 
         //store expected parameters
             _expectedParameters = null,
@@ -14,6 +17,10 @@
                 _calls.push({
                     arguments: arguments || []
                 });
+
+                for (var i = 0; i < _callbacks.length; i++) {
+                    _callbacks[i].apply(this, arguments);
+                }
             },
 
         //set expected parameters
@@ -24,6 +31,12 @@
                 }
                 return _self;
             },
+            
+        //register a callback
+            _callback = function(callback) {
+                _callbacks.push(callback);
+            },
+
         //check matching arguments against those specified
             _areParametersValid = function(params) {
                 //if nothing has been specified, we're fine
@@ -47,5 +60,6 @@
         this.called = _called;
         this.with = _with,
         this.matches = _areParametersValid;
+        this.callback = _callback;
     };
 })(jsMock);
