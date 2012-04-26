@@ -64,3 +64,47 @@ test("verify verifies all setups", function () {
     mock.member1();
     raises(function () { mock.verify(); });
 });
+
+
+test("setup with same signature overwrites", function () {
+    var mock = new jsMock.Mock(),
+        resultWithParams,
+        resultWithoutParams;
+
+    //setup two calls that return 'first result'
+    mock.setup("member").returns("first result");
+    mock.setup("memberWithParameters").with(jsMock.constants.anything).returns("first result");
+
+    //overwrite both calls
+    mock.setup("member").returns("second result");
+    mock.setup("memberWithParameters").with(jsMock.constants.anything).returns("second result");
+
+    //make the calls
+    resultWithoutParams = mock.member();
+    resultWithParams = mock.memberWithParameters(null);
+
+    //check that both returned the more recent result
+    equal("second result", resultWithoutParams, "The more recent setup should overwrite the earlier one");
+    equal("second result", resultWithParams, "The more recent setup should overwrite the earlier one");
+});
+
+test("setup supports multiple methods with different signatures", function() {
+     var mock = new jsMock.Mock();
+
+     var one = mock.setup("member").returns("one");
+     var two = mock.setup("member").with(jsMock.constants.anything).returns("two");
+     var three = mock.setup("member").with("specific value").returns("three");
+     var four = mock.setup("member").with().returns("four");
+     var five = mock.setup("other");
+
+     equal(mock.member("specific value"), "three", "Can match most specific value so should use that");
+     equal(mock.member(null), "two", "Can't match 'specific value' but can match anything");
+     equal(mock.member(), "four", "Can match the parameterless version");
+     equal(mock.member("this", "doesnt", "match"), "one", "Can only match the catch-all version");
+
+     equal(three.calls.length, 1, "A single call match the most specific version");
+     equal(two.calls.length, 2, "Both the first and second calls match the second setup (as 'specific value' also matches against 'anything'");
+     equal(one.calls.length, 4, "All calls should match the one without parameters specified");
+     equal(four.calls.length, 1, "A single call matches the parameterless setup");
+     equal(five.calls.length, 0, "No calls matched the other member");
+});

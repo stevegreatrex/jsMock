@@ -130,9 +130,26 @@
                     for (var i = 0; i < arguments.length; i++)
                         parameters.push(arguments[i]);
 
-                    setup.called(parameters);
-                    return setup.returnValue;
+                    var matchingMember = _findAndUpdateMatchingMembers(setup.member, parameters);
+                    
+                    if (matchingMember)
+                        return matchingMember.returnValue;
                 };
+            },
+
+        //locate an existing setup matching the member name and update
+            _findAndUpdateMatchingMembers = function(member, parameters) {
+                var bestMatch;
+
+                //reverse traversal as more recent setups override older ones
+                for (var i = _setups.length-1; i >= 0; i--) {
+                    if (_setups[i].member === member && _setups[i].matches(parameters)) {
+                        if (!bestMatch) bestMatch = _setups[i];
+                        _setups[i].called(parameters);
+                    }
+                }
+
+                return bestMatch;
             },
 
         //create a setup
