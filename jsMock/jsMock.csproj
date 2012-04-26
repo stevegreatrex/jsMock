@@ -39,7 +39,7 @@
     <Content Include="lib\json2.js" />
     <Content Include="lib\qunit.js" />
     <Content Include="tests\qunit.css" />
-    <Content Include="Setup.js" />
+    <Content Include="tests\TestMock.js" />
     <Content Include="tests\TestRunner.htm" />
     <Content Include="tests\TestSetup.js" />
   </ItemGroup>

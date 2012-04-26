@@ -238,7 +238,7 @@ var setup = new jsMock.Setup("member")
 });
 
 test("times.noMoreThan", function() {
-var setup = new jsMock.Setup("member")
+    var setup = new jsMock.Setup("member")
     var returnedSetup = setup.times.noMoreThan(2);
     equal(setup, returnedSetup, "noMoreThan should return the setup");
 
@@ -260,4 +260,30 @@ var setup = new jsMock.Setup("member")
     //make a call
     setup.called();
     raises(function() { setup.verify(); }, "Expected 0-2 calls but had 4");
+});
+
+test("times.never", function() {
+    var setup = new jsMock.Setup("member")
+    var returnedSetup = setup.times.never();
+    equal(setup, returnedSetup, "never should return the setup");
+
+    //no calls so far, so should pass
+    setup.verify();
+
+    //make a call
+    setup.called();
+    raises(function() { setup.verify(); }, "Expected 0 calls but had 1");
+
+     //make a call
+    setup.called();
+    raises(function() { setup.verify(); }, "Expected 0 calls but had 2");
+});
+
+
+test("returns() sets return type", function() {
+    var setup = new jsMock.Setup("member")
+    var fromReturns = setup.returns("return value");
+    equal(setup, fromReturns, "returns should return the setup");
+
+    equal("return value", setup.returnValue, "The returnValue property should have been set");
 });
