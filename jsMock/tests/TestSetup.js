@@ -1,4 +1,4 @@
-﻿module("Setup test");
+﻿module("Setup");
 
 test("method name is set", function () {
     var setup = new jsMock.Setup("member");

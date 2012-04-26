@@ -35,9 +35,8 @@
         //set expected parameters
             _with = function () {
                 _expectedParameters = [];
-                for (var i = 0; i < arguments.length; i++) {
+                for (var i = 0; i < arguments.length; i++)
                     _expectedParameters.push(arguments[i]);
-                }
                 return _self;
             },
             
@@ -127,6 +126,12 @@
         //function that creates a function for a mocked member
             _mockMemberFactory = function(setup) {
                 return function() {
+                    var parameters = [];
+                    for (var i = 0; i < arguments.length; i++)
+                        parameters.push(arguments[i]);
+
+                    setup.called(parameters);
+                    return setup.returnValue;
                 };
             },
 
@@ -136,9 +141,17 @@
                 _setups.push(setup);
                 _self[member] = _mockMemberFactory(setup);
                 return setup;
+            },
+        
+        //verify    
+            _verify = function() {
+                for (var i = 0; i < _setups.length; i++) {
+                    _setups[i].verify();
+                }
             };
 
         //public members
         this.setup = _setup;
+        this.verify = _verify;
     };
 })(jsMock);
