@@ -82,3 +82,16 @@ test("called throws exception when non-matching with is called", function() {
         setup.called(["1", 2, "false"]);
     }, "Invalid parameters");
 });
+
+test("matches correctly checks parameter lists", function() {
+    var setup = new jsMock.Setup("member")
+    
+        //expect specific paramemers
+        .with("1", 2, false);
+
+    equal(false, setup.matches([]), "Parameters should not match");
+    equal(false, setup.matches([1, 2, false]), "Parameters should not match");
+    equal(false, setup.matches(["1", "2", false]), "Parameters should not match");
+    equal(false, setup.matches(["1", 2, "false"]), "Parameters should not match");
+    equal(true, setup.matches(["1", 2, false]), "Parameters should match");
+});

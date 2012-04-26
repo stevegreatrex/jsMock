@@ -44,6 +44,7 @@
         this.member = member;
         this.calls = _calls;
         this.called = _called;
-        this.with = _with;
+        this.with = _with,
+        this.matches = _areParametersValid;
     };
 })(jsMock);
